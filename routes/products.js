@@ -11,11 +11,17 @@ export default async function products(app, options) {
                 logMe: true
             }
         }, 
-        async (request, reply) => {
-            return await products.find().toArray();
-        }
-    );
+        async (req, rep) => {
+        return await products.find().toArray();
+    });
 
+    app.get('/products/:id', async (req, rep) => {
+        let id = req.params.id;
+        let product = await products.findOne({_id: new app.mongo.ObjectId(id)});
+        
+        return product;
+    });
+    
     app.post('/products', {
         schema: {
             body: {
@@ -23,56 +29,46 @@ export default async function products(app, options) {
                 properties: {
                     id: { type: 'integer' },
                     name: { type: 'string' },
-                    qtd: { type: 'integer' }
+                    qtd: { type: 'integer' },
+                    cat_id: {type: 'string'}
                 },
-                required: ['name', 'qtd']
+                required: ['name', 'qtd', 'cat_id']
             }
         },
         config: {
             requireAuthentication: true
         }
-    }, async (request, reply) => {
-        let product = request.body;
-        
+    }, async (req, rep) => {
+        let product = req.body;
+
         await products.insertOne(product);
 
-        return reply.code(201).send();
+        return rep.code(201).send();
     });
 
-    app.get('/products/:id', async (request, reply) => {
-        let id =  request.params.id;
-        let product = await products.findOne({_id: new app.mongo.ObjectId(id)});
-        
-        return product;
-    });
     
-    app.delete('/products/:id', {
-        config: {
-            requireAuthentication: true
-        }
-    }, async (request, reply) => {
-        let id =  request.params.id;
+    app.delete('/products/:id', { config: {
+        requireAuthentication: true
+    }}, async (req, rep) => {
+        let id = req.params.id;
+        let product = await products.deleteOne({_id: new app.mongo.ObjectId(id)});
         
-        await products.deleteOne({_id: new app.mongo.ObjectId(id)});
-        
-        return reply.code(204).send();;
+        return rep.code(204).send();
     });
 
-    app.put('/products/:id', {
-        config: {
-            requireAuthentication: true
-        }
-    }, async (request, reply) => {
-        let id =  request.params.id;
-        let product = request.body;
-        
+    app.put('/products/:id', { config: {
+        requireAuthentication: true
+    }}, async (req, rep) => {
+        let id = req.params.id;
+        let product = req.body;
         await products.updateOne({_id: new app.mongo.ObjectId(id)}, {
             $set: {
                 name: product.name,
-                qtd: product.qtd
+                qtd: product.qtd,
+                cat_id: product.cat_id
             }
         });
         
-        return reply.code(204).send();;
+        return rep.code(204).send();
     });
 }

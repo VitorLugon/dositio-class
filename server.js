@@ -1,5 +1,6 @@
-import { build, options } from './app.js';
+import { build, options } from "./app.js";
 import closeWithGrace from 'close-with-grace';
+
 
 const server = await build(options);
 

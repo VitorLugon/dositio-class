@@ -1,23 +1,22 @@
 import fastify from 'fastify';
 import createError from '@fastify/error';
 import autoload from '@fastify/autoload';
-import mongodb from '@fastify/mongodb';
 import jwt from '@fastify/jwt';
-import { fileURLToPath } from 'url';
-import path from 'path';
+import mongodb  from '@fastify/mongodb';
+import {fileURLToPath} from 'url';
 import dotenv from 'dotenv';
+import path from 'path';
 
 dotenv.config();
 
-export const options = {
+export const options = { 
     stage: process.env.STAGE,
     port: process.env.PORT,
     host: process.env.HOST,
-    logger: process.env.STAGE === 'dev' ? { transport : { target: 'pino-pretty'} } : false,
+    logger: process.env.STAGE === 'dev' ? {transport : {target: 'pino-pretty'}} : false,
     jwt_secret: process.env.JWT_SECRET,
     db_url: process.env.DB_URL
 };
-
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -38,7 +37,7 @@ export async function build(opts){
     await app.register(autoload, {
         dir: path.join(__dirname, 'hooks'),
         encapsulate: false,
-        ignoreFilter: (path) =>{
+        ignoreFilter: (path) => {
             return path.includes('functions');
         }
     });
@@ -48,27 +47,27 @@ export async function build(opts){
     });
 
 
-    app.get('/error', (request, reply) => {
+    app.get('/error', (req, rep) => {
         throw new MyCustomError();
     });
  
 
-    app.setErrorHandler(async (error, request, reply) => {
+    app.setErrorHandler(async (error, req, rep) => {
         const  { validation } = error;
-        request.log.error({ error });
-        reply.code(error.statusCode || 500);
+        req.log.error({ error });
+        rep.code(error.statusCode || 500);
 
         
         return validation ? `Validation Error: ${validation[0].message}.` : 'Internal Server Error';
     });
 
-    app.get('/notfound', async (request, reply) => {
-        request.log.info('Sending to not found handler.');
-        reply.callNotFound();
+    app.get('/notfound', async (req, rep) => {
+        req.log.info('Sending to not found handler.');
+        rep.callNotFound();
     });
 
-    app.setNotFoundHandler(async (request, reply) => {
-        reply.code(404);
+    app.setNotFoundHandler(async (req, rep) => {
+        rep.code(404);
         return 'Resource not found.';
     });
 
