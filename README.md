@@ -32,7 +32,7 @@ Para utilizar a aplicação, siga os passos abaixo:
    - Certifique-se de ter o Node.js e o MongoDB instalados em seu sistema.
    - Clone o repositório do projeto:
      ```
-     git clone https://github.com/seu-usuario/dositio.git
+     git clone https://github.com/VitorLugon/dositio.git
      ```
    - Navegue até o diretório do projeto:
      ```
