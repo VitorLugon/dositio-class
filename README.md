@@ -15,7 +15,7 @@ Dositio é uma aplicação de exemplo desenvolvida como parte de um projeto prá
 
 - **Categorias:**
   - `GET /categories`: Retorna a lista de categorias de produtos existentes.
-  - `POST /categories`: Cria uma nova categoria no banco de dados. Garante a validação dos campos (apenas `name` e `img_url`). Retorna status 201 sem conteúdo.
+  - `POST /categories`: Cria uma nova categoria no banco de dados.
   - `PUT /categories/:id`: Atualiza os dados de uma categoria específica.
   - `DELETE /categories/:id`: Remove uma categoria existente.
 
